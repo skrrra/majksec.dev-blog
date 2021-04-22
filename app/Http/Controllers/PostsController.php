@@ -4,67 +4,66 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Posts;
-use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
     public function index()
     {
-        $posts = DB::table('posts')->get();
+        $posts = Posts::with(['comments' => function($query){
+            $query->select('name', 'comment', 'created_at');
+        }])->paginate(10);
         
-        return view('dashboard', [
-            'posts' => $posts
+        return view('admin.dashboard', [
+            'posts' => $posts,
         ]);
     }
 
     public function create()
     {
-        return view('layouts.newpost');
+        return view('admin.newpost');
     }
 
     public function store(Request $request)
     {
-        
+
         $validate = $request->validate([
-            'title' => 'bail|required',
+            'title'       => 'bail|required',
             'description' => 'bail|required',
-            'slug' => 'bail|required',
-            'content' => 'bail|required'
+            'slug'        => 'bail|required',
+            'content'     => 'bail|required',
         ]);
-        $post = new Posts($validate);
 
-        $post->save();
+        Posts::create($validate);
 
-        return redirect('/admin/dashboard')->with('status', 'Page has been created');
+        return redirect('/admin/dashboard')->with('status', 'Page has been created!');
     }
 
-    public function edit($slug)
+    public function edit(Posts $posts)
     {
-        $slug = DB::table('posts')->where('slug', $slug)->first();
-
-        return view('editpost', [
-            'slug' => $slug,
+        return view('admin.editpost', [
+            'slug' => $posts,
         ]);
     }
 
-    public function update(Request $request, Posts $post)
+    public function update(Request $request, Posts $posts)
     {
         $validate = $request->validate([
-            'title' => 'bail|required',
+            'title'       => 'bail|required',
             'description' => 'bail|required',
-            'slug' => 'bail|required',
-            'content' => 'bail|required'
+            'slug'        => 'bail|required',
+            'content'     => 'bail|required',
         ]);
-        
-        $post->fill($validate);
-        $post->save();
-        
-        return redirect('/admin/dashboard')->with('status', 'Page has been updated');
+
+        $posts->fill($validate);
+        $posts->save();
+
+        return redirect('/admin/dashboard')->with('status', 'Page has been updated!');
     }
 
-    public function delete(Posts $post)
+    public function delete(Posts $posts)
     {
-        $post->delete();
-        return redirect('/admin/dashboard');
+        $posts->delete();
+
+        return redirect('/admin/dashboard')->with('status', 'Page has been deleted!');
     }
 }

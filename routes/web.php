@@ -3,6 +3,8 @@
 use App\Models\Posts;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\ArticleController;
+use App\Models\Comment;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,29 +17,38 @@ use App\Http\Controllers\PostsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('index');
 
-Route::get('/admin/dashboard', [PostsController::class, 'index'])
-            ->middleware(['auth'])
-            ->name('dashboard');
+Route::middleware(['auth'])->group(function () {
 
-Route::get('/admin/new', [PostsController::class, 'create'])
-            ->middleware(['auth'])
-            ->name('new');
+    Route::get('/admin/dashboard', [PostsController::class, 'index'])
+        ->name('dashboard');
 
-Route::post('/admin/new', [PostsController::class, 'store'])
-            ->middleware(['auth']);
+    Route::get('/admin/new', [PostsController::class, 'create'])
+        ->name('new');
 
-Route::patch('/admin/{post}/updated', [PostsController::class, 'update'])
-            ->middleware(['auth']);
+    Route::post('/admin/new', [PostsController::class, 'store']);
 
-Route::get('/admin/{slug}/edit', [PostsController::class, 'edit'])
-            ->middleware(['auth']);
+    Route::patch('/admin/{posts:slug}/updated', [PostsController::class, 'update']);
 
-Route::get('/admin/{post:slug}/delete', [PostsController::class, 'delete'])
-            ->middleware(['auth'])
-            ->name('delete');
+    Route::get('/admin/{posts:slug}/edit', [PostsController::class, 'edit']);
 
-require __DIR__.'/auth.php';
+    Route::get('/admin/{posts:slug}/delete', [PostsController::class, 'delete'])
+        ->name('delete');
+    
+    Route::get('/p/{comment:id}/delete', [ArticleController::class, 'destroy']);
+});
+
+Route::get('/', [ArticleController::class, 'index'])
+        ->name('index');
+
+    // post comment route
+Route::post('/p/{slug}', [ArticleController::class, 'store']);
+
+    // post return view
+Route::get('/p/{posts:slug}', [ArticleController::class, 'show']);
+
+
+require __DIR__ . '/auth.php';

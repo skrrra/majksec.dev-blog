@@ -1,6 +1,12 @@
 <x-guest-layout>
+    
     <x-auth-card>
-
+        <div class="flex justify-center font-bold text-6xl mb-5">
+            <p>majksec.dev</p>
+        </div>
+        <div class="flex justify-center underline text-2xl mb-10">
+            <p>Admin Login</p>
+        </div>
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
