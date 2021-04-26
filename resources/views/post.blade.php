@@ -46,22 +46,22 @@
                 </div>
                 <hr>
             </div>
-            <div class="mt-16">
+            <div class="mt-5 sm:mt-16 mr-5">
                 <span>{!! $posts->content !!}</span>
             </div>
-            <div class="my-10 hover:text-gray-600 transition duration-300">
+            <div class="my-10 font-semibold text-gray-800 hover:bg-gray-800 hover:text-white transition duration-300 pl-10">
                 <a class="flex flex-row" href="/">
                     <svg class="h-10 w-10" fill="black" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
                     </svg>
                     <div class="flex flex-col justify-center">
-                        <p class=""> Go back</p>
+                        <p> All Posts</p>
                     </div>
                 </a>
             </div>
 
             {{-- comments --}}
-            <div class="mx-24">
+            <div class="sm:mx-24">
                 <div class="my-10">
                     @if (count($posts->comments) != 0)
                         <p class="text-center text-2xl pb-5">Comments [ {{ count($posts->comments) }} ]</p>

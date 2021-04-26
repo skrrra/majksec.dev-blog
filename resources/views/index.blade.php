@@ -23,15 +23,14 @@
                             </a>
                         </div>
         
-                        <!-- Navigation Links -->
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                {{ __('All Posts') }}
-                            </x-nav-link>
-                            <x-nav-link :href="route('new')" :active="request()->routeIs('new')">
-                                {{ __('Resources') }}
-                            </x-nav-link>
-                        </div>
+                        @auth
+                            <!-- Admin Navigation Links -->
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                    {{ __('Admin Dashboard') }}
+                                </x-nav-link>
+                            </div>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -42,33 +41,44 @@
         <div class="rounded-md bg-white max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 my-10">
             
             @foreach ($posts as $post)
-                <div class="mt-16 block">
+                <div class="sm:mt-12 block">
                     <div class="py-7">
                         <span class="text-3xl font-semibold block text-center"><a href="/p/{{ $post->slug }}">{{ $post->title }}</a></span>
-                        <div class="flex flex-row justify-center">
-                            <div class="">
+                        <div class="flex flex-row justify-center text-sm sm:text-md">
+                            <div>
                                 <p class="text-md font-semibold text-gray-400 block text-center mt-2">majksec.dev</p>
                             </div>
-                            <div class="">
+                            <div>
                                 <span class="font-semibold text-gray-400 block text-center mt-2 mx-2">/</span>
                             </div>
-                            <div class="">
+                            <div>
                                 @if ($comment->where('postid', $post->id)->count() != 0)
                                     <span class="font-semibold text-gray-400 block text-center mt-2">Comments {{ $comment->where('postid', $post->id)->count() }}</span>
                                 @else
                                     <span class="font-semibold text-gray-400 block text-center mt-2">No comments yet!</span>
                                 @endif
                             </div>
-                            <div class="">
+                            <div>
                                 <span class="font-semibold text-gray-400 block text-center mt-2 mx-2">/</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400 block text-center mt-2">{{ date('d/m/Y', strtotime($post->created_at)) }}</span>
                             </div>
                         </div>
                     </div>
-                    <hr>
+                    <hr class="md:mx-36 h-1 bg-gray-500 opacity-50">
                 </div>
-                <div class="mt-16">
-                    <span>{!! $post->description !!}</span>
+                <div class="mt-6 sm:mx-32">
+                    <p class="text-xl text-center block">{{ substr(strip_tags($post->content, '<'), 0, 400).' [...]' }}</p>
                 </div>
+                <div class="flex justify-center">
+                    <a href="/p/{{ $post->slug }}"><button class="bg-gray-700 px-3 py-1 text-white rounded font-semibold mt-8 mb-5">Read More..</button></a>
+                </div>
+                <hr class="mt-4">
             @endforeach
+
+        <footer>
+            
+        </footer>
     </body>
 </html>
